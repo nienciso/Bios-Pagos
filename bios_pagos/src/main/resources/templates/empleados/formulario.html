@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Empleado</title>
+</head>
+<body>
+
+    <h1>Formulario de Empleado</h1>
+
+    <form th:action="@{/empleados/guardar}" th:object="${empleado}" method="post">
+
+        <div>
+            <label>Correo electrónico:</label>
+            <input type="email" th:field="*{correoElectronico}">
+            <span th:if="${#fields.hasErrors('correoElectronico')}" th:errors="*{correoElectronico}"></span>
+        </div>
+
+        <div>
+            <label>Clave de acceso:</label>
+            <input type="text" th:field="*{claveAcceso}">
+            <span th:if="${#fields.hasErrors('claveAcceso')}" th:errors="*{claveAcceso}"></span>
+        </div>
+
+        <div>
+            <label>Nombre completo:</label>
+            <input type="text" th:field="*{nombreCompleto}">
+            <span th:if="${#fields.hasErrors('nombreCompleto')}" th:errors="*{nombreCompleto}"></span>
+        </div>
+
+        <div>
+            <label>Fecha ingreso:</label>
+            <input type="date" name="fechaIngreso" th:value="${empleado.fechaIngreso}">
+            <span th:if="${#fields.hasErrors('fechaIngreso')}" th:errors="*{fechaIngreso}"></span>
+        </div>
+
+        <div>
+            <label>Activo:</label>
+
+            <input type="checkbox"
+                th:field="*{activo}">
+        </div>
+        <br>
+
+        <button type="submit">Guardar</button>
+        <a href="/empleados">Cancelar</a>
+
+    </form>
+
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Envío de Dinero</title>
+</head>
+<body>
+
+    <h1>Formulario de Envío de Dinero</h1>
+
+    <form th:action="@{/envios/guardar}" th:object="${envio}" method="post">
+
+        <div>
+            <label>Monto:</label>
+            <input type="number" step="0.01" th:field="*{monto}">
+            <span th:if="${#fields.hasErrors('monto')}" th:errors="*{monto}"></span>
+        </div>
+
+        <div>
+            <label>Cédula destinatario:</label>
+            <input type="text" th:field="*{cedulaDestinatario}">
+            <span th:if="${#fields.hasErrors('cedulaDestinatario')}" th:errors="*{cedulaDestinatario}"></span>
+        </div>
+
+        <div>
+            <label>Cliente:</label>
+            <select th:field="*{cliente}">
+                <option value="">Seleccione un cliente</option>
+                <option th:each="cliente : ${clientes}"
+                        th:value="${cliente.correoElectronico}"
+                        th:text="${cliente.nombreCompleto}">
+                </option>
+            </select>
+            <span th:if="${#fields.hasErrors('cliente')}" th:errors="*{cliente}"></span>
+        </div>
+
+        <div>
+            <label>Empleado:</label>
+            <select th:field="*{empleado}">
+                <option value="">Seleccione un empleado</option>
+                <option th:each="empleado : ${empleados}"
+                        th:value="${empleado.correoElectronico}"
+                        th:text="${empleado.nombreCompleto}">
+                </option>
+            </select>
+            <span th:if="${#fields.hasErrors('empleado')}" th:errors="*{empleado}"></span>
+        </div>
+
+        <div>
+            <label>Sucursal de registro:</label>
+            <select th:field="*{sucursalRegistro}">
+                <option value="">Seleccione una sucursal</option>
+                <option th:each="sucursal : ${sucursales}"
+                        th:value="${sucursal.numero}"
+                        th:text="${sucursal.nombre}">
+                </option>
+            </select>
+            <span th:if="${#fields.hasErrors('sucursalRegistro')}" th:errors="*{sucursalRegistro}"></span>
+        </div>
+
+        <div>
+            <label>Sucursal de cobro:</label>
+            <select th:field="*{sucursalPago}">
+                <option value="">Seleccione una sucursal</option>
+                <option th:each="sucursal : ${sucursales}"
+                        th:value="${sucursal.numero}"
+                        th:text="${sucursal.nombre}">
+                </option>
+            </select>
+            <span th:if="${#fields.hasErrors('sucursalPago')}" th:errors="*{sucursalPago}"></span>
+        </div>
+
+        <br>
+
+        <button type="submit">Guardar</button>
+        <a th:href="@{/envios}">Cancelar</a>
+
+    </form>
+
+</body>
+</html>

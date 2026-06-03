@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Envío</title>
+</head>
+<body>
+
+    <h1>Detalle del Envío</h1>
+
+    <p>
+        <strong>ID:</strong>
+        <span th:text="${envio.id}"></span>
+    </p>
+
+    <p>
+        <strong>Fecha registro:</strong>
+        <span th:text="${envio.fechaHoraRegistro}"></span>
+    </p>
+
+    <p>
+        <strong>Monto:</strong>
+        <span th:text="${envio.monto}"></span>
+    </p>
+
+    <p>
+        <strong>Cliente:</strong>
+        <span th:text="${envio.cliente.nombreCompleto}"></span>
+    </p>
+
+    <p>
+        <strong>Destinatario:</strong>
+        <span th:text="${envio.cedulaDestinatario}"></span>
+    </p>
+
+    <p>
+        <strong>Empleado:</strong>
+        <span th:text="${envio.empleado.nombreCompleto}"></span>
+    </p>
+
+    <p>
+        <strong>Sucursal registro:</strong>
+        <span th:text="${envio.sucursalRegistro.nombre}"></span>
+    </p>
+
+    <p>
+        <strong>Fecha pago:</strong>
+        <span th:text="${envio.fechaHoraPago != null ? envio.fechaHoraPago : 'Pendiente'}"></span>
+    </p>
+
+    <p>
+        <strong>Sucursal pago:</strong>
+        <span th:text="${envio.sucursalPago != null ? envio.sucursalPago.nombre : 'Pendiente'}"></span>
+    </p>
+
+    <p>
+        <strong>Importe a cobrar:</strong>
+        <span th:text="${envio.importeACobrar}"></span>
+    </p>
+
+    <p>
+        <a href="/envios">Volver</a>
+    </p>
+
+    <p>
+        <a th:href="@{/}">
+            Volver al inicio
+        </a>
+    </p>
+
+</body>
+</html>

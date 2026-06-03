@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sucursales</title>
+</head>
+<body>
+
+    <h1>Listado de Sucursales</h1>
+
+    <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+    <p>
+        <a href="/sucursales/nueva">Nueva sucursal</a>
+    </p>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+                <th>Fotografía</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="sucursal : ${sucursales}">
+
+                <td th:text="${sucursal.numero}"></td>
+
+                <td th:text="${sucursal.nombre}"></td>
+
+                <td th:text="${sucursal.direccion}"></td>
+
+                <td th:text="${sucursal.telefono}"></td>
+
+                <td>
+                    <img th:if="${sucursal.fotografiaFachada != null and !sucursal.fotografiaFachada.isEmpty()}"
+                         th:src="@{'/imagenes/' + ${sucursal.fotografiaFachada}}"
+                         width="100"
+                         alt="Foto sucursal">
+
+                    <span th:if="${sucursal.fotografiaFachada == null or sucursal.fotografiaFachada.isEmpty()}">
+                        Sin imagen
+                    </span>
+                </td>
+
+                <td>
+                    <a th:href="@{/sucursales/editar/{numero}(numero=${sucursal.numero})}">
+                        Editar
+                    </a>
+                    |
+                    <a th:href="@{/sucursales/eliminar/{numero}(numero=${sucursal.numero})}">
+                        Eliminar
+                    </a>
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <a th:href="@{/}">
+        Volver al inicio
+    </a>
+
+</body>
+</html>

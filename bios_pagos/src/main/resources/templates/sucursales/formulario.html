@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sucursal</title>
+</head>
+<body>
+
+    <h1>Formulario de Sucursal</h1>
+
+        <form th:action="@{/sucursales/guardar}"
+        th:object="${sucursal}"
+        method="post"
+        enctype="multipart/form-data">
+
+        <div>
+            <label>Número:</label>
+            <input type="number" th:field="*{numero}">
+            <span th:if="${#fields.hasErrors('numero')}" th:errors="*{numero}"></span>
+        </div>
+
+        <div>
+            <label>Nombre:</label>
+            <input type="text" th:field="*{nombre}">
+            <span th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+        </div>
+
+        <div>
+            <label>Dirección:</label>
+            <input type="text" th:field="*{direccion}">
+            <span th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></span>
+        </div>
+
+        <div>
+            <label>Teléfono:</label>
+            <input type="text" th:field="*{telefono}">
+            <span th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></span>
+        </div>
+
+        <div>
+            <label>Fotografía fachada:</label>
+            <input type="file" name="archivo">
+        </div>
+
+        <div th:if="${sucursal.fotografiaFachada != null and !sucursal.fotografiaFachada.isEmpty()}">
+            <p>Imagen actual:</p>
+
+            <img th:src="@{'/imagenes/' + ${sucursal.fotografiaFachada}}"
+                width="200"
+                alt="Foto de sucursal">
+        </div>
+
+        <br>
+
+        <button type="submit">Guardar</button>
+        <a href="/sucursales">Cancelar</a>
+
+    </form>
+
+</body>
+</html>

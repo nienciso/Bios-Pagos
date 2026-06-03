@@ -1,0 +1,2 @@
+# Bios-Pagos
+Proyecto 3er año Bios - La empresa BIOS Pagos, una red de cobranza que funciona en los diecinueve departamentos del país,  le ha solicitado a su equipo, el desarrollo de un sistema web para que sus clientes puedan realizar el  envío de dinero en efectivo al destinatario que ellos indiquen.  Implementa tecnologias web Sping Framework y Spring Boot. Construido sobre un proyecto Marven empaquetado en JAR. Usa patron MVC y Thymeleaf para las plantillas.

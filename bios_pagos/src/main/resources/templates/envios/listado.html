@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Envíos de Dinero</title>
+</head>
+<body>
+
+    <h1>Listado de Envíos de Dinero</h1>
+
+    <p>
+        <a href="/envios/nuevo">Nuevo envío</a>
+    </p>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha registro</th>
+                <th>Monto</th>
+                <th>Cliente</th>
+                <th>Destinatario</th>
+                <th>Sucursal registro</th>
+                <th>Fecha pago</th>
+                <th>Sucursal pago</th>
+                <th>Importe a cobrar</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="envio : ${envios}">
+                <td th:text="${envio.id}"></td>
+
+                <td th:text="${envio.fechaHoraRegistro}"></td>
+
+                <td th:text="${envio.monto}"></td>
+
+                <td th:text="${envio.cliente.nombreCompleto}"></td>
+
+                <td th:text="${envio.cedulaDestinatario}"></td>
+
+                <td th:text="${envio.sucursalRegistro.nombre}"></td>
+
+                <td th:text="${envio.fechaHoraPago != null ? envio.fechaHoraPago : 'Por cobrar'}"></td>
+
+                <td th:text="${envio.sucursalPago != null ? envio.sucursalPago.nombre : 'Pendiente'}"></td>
+
+                <td th:text="${envio.importeACobrar}"></td>
+
+                <td>
+
+                    <a th:href="@{/envios/ver/{id}(id=${envio.id})}">
+                        Ver
+                    </a>
+
+                    <span th:if="${envio.fechaHoraPago == null}">
+                        |
+                        <a th:href="@{/envios/pagar/{id}(id=${envio.id})}">
+                            Pagar
+                        </a>
+                    </span>
+
+                    |
+
+                    <a th:href="@{/envios/eliminar/{id}(id=${envio.id})}">
+                        Eliminar
+                    </a>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <a th:href="@{/}">
+        Volver al inicio
+    </a>
+
+</body>
+</html>

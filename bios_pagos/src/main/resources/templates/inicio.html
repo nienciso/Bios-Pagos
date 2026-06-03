@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BIOS Pagos</title>
+</head>
+<body>
+
+    <h1>BIOS Pagos</h1>
+
+    <div th:if="${autenticado}">
+        <p>
+            Sesión iniciada como:
+            <strong th:text="${usuario}"></strong>
+        </p>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Cerrar sesión</button>
+        </form>
+    </div>
+
+    <div th:if="${!autenticado}">
+        <p>
+            <a th:href="@{/login}">Iniciar sesión</a> |
+            <a th:href="@{/registro}">Registrarme</a>
+        </p>
+    </div>
+
+    <h2>Sucursales disponibles</h2>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Foto</th>
+                <th>Número</th>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="sucursal : ${sucursales}">
+                <td>
+                    <img th:if="${sucursal.fotografiaFachada != null}"
+                         th:src="@{'/imagenes/' + ${sucursal.fotografiaFachada}}"
+                         width="120"
+                         alt="Foto de sucursal">
+
+                    <span th:if="${sucursal.fotografiaFachada == null}">
+                        Sin imagen
+                    </span>
+                </td>
+
+                <td th:text="${sucursal.numero}"></td>
+                <td th:text="${sucursal.nombre}"></td>
+                <td th:text="${sucursal.direccion}"></td>
+                <td th:text="${sucursal.telefono}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${esEmpleado}">
+        <h2>Menú empleado</h2>
+
+        <ul>
+            <li><a th:href="@{/empleados}">Gestión de empleados</a></li>
+            <li><a th:href="@{/clientes}">Gestión de clientes</a></li>
+            <li><a th:href="@{/sucursales}">Gestión de sucursales</a></li>
+            <li><a th:href="@{/envios}">Gestión de envíos</a></li>
+        </ul>
+    </div>
+
+    <div th:if="${esCliente}">
+        <h2>Menú cliente</h2>
+
+        <ul>
+            <li><a th:href="@{/mis-envios}">Consultar mis envíos</a></li>
+        </ul>
+    </div>
+
+</body>
+</html>

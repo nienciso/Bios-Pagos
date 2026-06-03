@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Empleados</title>
+</head>
+<body>
+
+    <h1>Listado de Empleados</h1>
+
+    <form th:action="@{/empleados}" method="get">
+
+        <input type="text"
+               name="busqueda"
+               placeholder="Buscar empleado"
+               th:value="${busqueda}">
+
+        <select name="tipo">
+            <option value="nombre" th:selected="${tipo == 'nombre'}">
+                Por nombre
+            </option>
+
+            <option value="correo" th:selected="${tipo == 'correo'}">
+                Por correo
+            </option>
+        </select>
+
+        <button type="submit">Buscar</button>
+
+        <a th:href="@{/empleados}">
+            Limpiar
+        </a>
+
+    </form>
+
+    <br>
+
+    <p>
+        <a th:href="@{/empleados/nuevo}">
+            Nuevo empleado
+        </a>
+    </p>
+
+    <table border="1">
+
+        <thead>
+            <tr>
+                <th>Correo electrónico</th>
+                <th>Nombre completo</th>
+                <th>Fecha ingreso</th>
+                <th>Activo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr th:each="empleado : ${empleados}">
+
+                <td th:text="${empleado.correoElectronico}"></td>
+
+                <td th:text="${empleado.nombreCompleto}"></td>
+
+                <td th:text="${empleado.fechaIngreso}"></td>
+
+                <td th:text="${empleado.activo ? 'Sí' : 'No'}"></td>
+
+                <td>
+
+                    <a th:href="@{/empleados/ver/{correoElectronico}
+                    (correoElectronico=${empleado.correoElectronico})}">
+                        Ver
+                    </a>
+
+                    |
+
+                    <a th:href="@{/empleados/editar/{correoElectronico}
+                    (correoElectronico=${empleado.correoElectronico})}">
+                        Editar
+                    </a>
+
+                    |
+
+                    <a th:href="@{/empleados/eliminar/{correoElectronico}
+                    (correoElectronico=${empleado.correoElectronico})}">
+                        Eliminar
+                    </a>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <a th:href="@{/}">
+        Volver al inicio
+    </a>
+
+</body>
+</html>

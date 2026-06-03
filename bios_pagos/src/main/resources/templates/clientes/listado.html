@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes</title>
+</head>
+<body>
+
+<h1>Listado de Clientes</h1>
+
+<p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Correo electrónico</th>
+                <th>Nombre completo</th>
+                <th>Cédula</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="cliente : ${clientes}">
+                <td th:text="${cliente.correoElectronico}"></td>
+                <td th:text="${cliente.nombreCompleto}"></td>
+                <td th:text="${cliente.cedula}"></td>
+                <td>
+                    <a th:href="@{/clientes/editar/{correoElectronico}(correoElectronico=${cliente.correoElectronico})}">Editar</a>
+                    |
+                    <a th:href="@{/clientes/eliminar/{correoElectronico}(correoElectronico=${cliente.correoElectronico})}">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <a th:href="@{/}">Volver al inicio</a>
+
+</body>
+</html>

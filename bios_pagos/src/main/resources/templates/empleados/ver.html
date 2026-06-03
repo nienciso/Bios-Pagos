@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Empleado</title>
+</head>
+<body>
+
+    <h1>Detalle del Empleado</h1>
+
+    <p><strong>Correo electrónico:</strong> <span th:text="${empleado.correoElectronico}"></span></p>
+    <p><strong>Nombre completo:</strong> <span th:text="${empleado.nombreCompleto}"></span></p>
+    <p><strong>Fecha de ingreso:</strong> <span th:text="${empleado.fechaIngreso}"></span></p>
+    <p><strong>Activo:</strong> <span th:text="${empleado.activo ? 'Sí' : 'No'}"></span></p>
+
+    <p>
+        <a th:href="@{/empleados}">Volver</a>
+    </p>
+
+</body>
+</html>

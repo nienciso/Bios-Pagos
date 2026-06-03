@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis envíos</title>
+</head>
+<body>
+
+    <h1>Mis envíos de dinero</h1>
+
+    <p>
+        <a th:href="@{/mis-envios}">Todos</a> |
+        <a th:href="@{/mis-envios(estado='pendientes')}">Por cobrar</a> |
+        <a th:href="@{/mis-envios(estado='cobrados')}">Cobrados</a>
+    </p>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha registro</th>
+                <th>Monto</th>
+                <th>Importe a cobrar</th>
+                <th>Cédula destinatario</th>
+                <th>Sucursal cobro</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr th:each="envio : ${envios}">
+                <td th:text="${envio.id}"></td>
+                <td th:text="${envio.fechaHoraRegistro}"></td>
+                <td th:text="${envio.monto}"></td>
+                <td th:text="${envio.importeACobrar}"></td>
+                <td th:text="${envio.cedulaDestinatario}"></td>
+                <td th:text="${envio.sucursalPago.nombre}"></td>
+                <td th:text="${envio.fechaHoraPago == null ? 'Por cobrar' : 'Cobrado'}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        <a th:href="@{/}">Volver</a>
+    </p>
+
+</body>
+</html>

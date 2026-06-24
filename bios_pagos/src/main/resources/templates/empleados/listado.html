@@ -8,6 +8,9 @@
 
     <h1>Listado de Empleados</h1>
 
+    <p th:if="${mensaje}" th:text="${mensaje}" style="color:green;"></p>
+<p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
     <form th:action="@{/empleados}" method="get">
 
         <input type="text"

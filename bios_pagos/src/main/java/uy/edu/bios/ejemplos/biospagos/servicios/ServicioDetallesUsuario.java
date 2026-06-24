@@ -9,21 +9,21 @@ import org.springframework.stereotype.Service;
 import uy.edu.bios.ejemplos.biospagos.dominio.Cliente;
 import uy.edu.bios.ejemplos.biospagos.dominio.Empleado;
 import uy.edu.bios.ejemplos.biospagos.dominio.Usuario;
-import uy.edu.bios.ejemplos.biospagos.repositorios.RepositorioUsuario;
+import uy.edu.bios.ejemplos.biospagos.repositorios.IRepositorioUsuarios;
 
 @Service
 public class ServicioDetallesUsuario implements UserDetailsService {
 
-    private final RepositorioUsuario repositorioUsuario;
+    private final IRepositorioUsuarios repositorioUsuarios;
 
-    public ServicioDetallesUsuario(RepositorioUsuario repositorioUsuario) {
-        this.repositorioUsuario = repositorioUsuario;
+    public ServicioDetallesUsuario(IRepositorioUsuarios repositorioUsuarios) {
+        this.repositorioUsuarios = repositorioUsuarios;
     }
 
     @Override
     public UserDetails loadUserByUsername(String correoElectronico) throws UsernameNotFoundException {
 
-        Usuario usuario = repositorioUsuario.findById(correoElectronico)
+        Usuario usuario = repositorioUsuarios.findById(correoElectronico)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         String rol = "";

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import uy.edu.bios.ejemplos.biospagos.dominio.Cliente;
+import uy.edu.bios.ejemplos.biospagos.excepciones.ExcepcionBiosPagos;
 import uy.edu.bios.ejemplos.biospagos.servicios.IServicioClientes;
 
 @Controller
@@ -35,14 +36,20 @@ public class ControladorClientes {
     }
 
     @PostMapping("/clientes/guardar")
-    public String guardar(@Valid Cliente cliente, BindingResult result) {
+    public String guardar(@Valid Cliente cliente, BindingResult result, Model model) {
 
         if (result.hasErrors()) {
             return "clientes/formulario";
         }
 
-        servicioClientes.guardar(cliente);
-        return "redirect:/clientes";
+        try {
+            servicioClientes.guardar(cliente);
+            return "redirect:/clientes";
+
+        } catch (ExcepcionBiosPagos ex) {
+            model.addAttribute("error", ex.getMessage());
+            return "clientes/formulario";
+        }
     }
 
     @GetMapping("/clientes/editar/{correoElectronico}")
@@ -58,34 +65,42 @@ public class ControladorClientes {
         return "clientes/formulario";
     }
 
-        @GetMapping("/clientes/eliminar/{correoElectronico}")
-        public String eliminar(@PathVariable String correoElectronico, Model model) {
+    @GetMapping("/clientes/eliminar/{correoElectronico}")
+public String eliminar(@PathVariable String correoElectronico, Model model) {
 
-            try {
-                servicioClientes.eliminar(correoElectronico);
-                return "redirect:/clientes";
+    try {
+        servicioClientes.eliminar(correoElectronico);
+        return "redirect:/clientes";
 
-            } catch (Exception e) {
-                model.addAttribute("clientes", servicioClientes.listar());
-                model.addAttribute("error", "No es posible eliminar clientes con envíos asociados.");
-                return "clientes/listado";
-            }
-        }
+    } catch (Exception e) {
 
-    @GetMapping("/registro")
-public String mostrarRegistro(Model model) {
-    model.addAttribute("cliente", new Cliente());
-    return "clientes/registro";
+        model.addAttribute("clientes", servicioClientes.listar());
+        model.addAttribute("error",
+                "No es posible eliminar clientes con envíos asociados.");
+
+        return "clientes/listado";
+    }
 }
-
-@PostMapping("/registro")
-public String registrar(@Valid Cliente cliente, BindingResult result) {
-
-    if (result.hasErrors()) {
+    @GetMapping("/registro")
+    public String mostrarRegistro(Model model) {
+        model.addAttribute("cliente", new Cliente());
         return "clientes/registro";
     }
 
-    servicioClientes.guardar(cliente);
-    return "redirect:/login";
-}
+    @PostMapping("/registro")
+    public String registrar(@Valid Cliente cliente, BindingResult result, Model model) {
+
+        if (result.hasErrors()) {
+            return "clientes/registro";
+        }
+
+        try {
+            servicioClientes.guardar(cliente);
+            return "redirect:/login";
+
+        } catch (ExcepcionBiosPagos ex) {
+            model.addAttribute("error", ex.getMessage());
+            return "clientes/registro";
+        }
+    }
 }

@@ -16,27 +16,33 @@ public class ControladorInicio {
         this.servicioSucursales = servicioSucursales;
     }
 
-    @GetMapping("/")
-    public String inicio(Model model, Authentication authentication) {
+@GetMapping("/")
+public String inicio(Model model, Authentication authentication) {
 
-        model.addAttribute("sucursales", servicioSucursales.listar());
+    model.addAttribute("sucursales", servicioSucursales.listar());
 
-        boolean autenticado = authentication != null && authentication.isAuthenticated()
-                && !"anonymousUser".equals(authentication.getName());
+    boolean autenticado = authentication != null
+            && authentication.isAuthenticated()
+            && !"anonymousUser".equals(authentication.getName());
 
-        model.addAttribute("autenticado", autenticado);
+    model.addAttribute("autenticado", autenticado);
 
-        if (autenticado) {
-            model.addAttribute("usuario", authentication.getName());
-            model.addAttribute("esEmpleado", authentication.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_EMPLEADO")));
-            model.addAttribute("esCliente", authentication.getAuthorities().stream()
-                    .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE")));
-        } else {
-            model.addAttribute("esEmpleado", false);
-            model.addAttribute("esCliente", false);
-        }
+    if (authentication != null) {
 
-        return "inicio";
+        model.addAttribute("usuario", authentication.getName());
+
+        model.addAttribute("esEmpleado", authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_EMPLEADO")));
+
+        model.addAttribute("esCliente", authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE")));
+
+    } else {
+
+        model.addAttribute("esEmpleado", false);
+        model.addAttribute("esCliente", false);
     }
+
+    return "inicio";
+}
 }

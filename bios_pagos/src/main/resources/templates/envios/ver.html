@@ -39,8 +39,8 @@
     </p>
 
     <p>
-        <strong>Sucursal registro:</strong>
-        <span th:text="${envio.sucursalRegistro.nombre}"></span>
+        <strong>Sucursal origen:</strong>
+        <span th:text="${envio.sucursalOrigen.nombre}"></span>
     </p>
 
     <p>
@@ -49,17 +49,19 @@
     </p>
 
     <p>
-        <strong>Sucursal pago:</strong>
-        <span th:text="${envio.sucursalPago != null ? envio.sucursalPago.nombre : 'Pendiente'}"></span>
+        <strong>Sucursal cobro:</strong>
+        <span th:text="${envio.sucursalCobro.nombre}"></span>
     </p>
 
     <p>
         <strong>Importe a cobrar:</strong>
-        <span th:text="${envio.importeACobrar}"></span>
+        <span th:text="${envio.importeCobrar}"></span>
     </p>
 
     <p>
-        <a href="/envios">Volver</a>
+        <a th:href="@{/envios}">
+            Volver
+        </a>
     </p>
 
     <p>

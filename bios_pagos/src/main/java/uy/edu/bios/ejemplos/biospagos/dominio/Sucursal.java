@@ -3,43 +3,38 @@ package uy.edu.bios.ejemplos.biospagos.dominio;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
+@Table(name = "sucursales")
 public class Sucursal {
 
     @Id
-    @NotNull(message = "{sucursal.numero.requerido}")
-    @Min(value = 1, message = "{sucursal.numero.minimo}")
+    @NotNull
+    @Min(1)
     private Integer numero;
 
-    @NotBlank(message = "{sucursal.nombre.requerido}")
-    @Column(nullable = false)
+    @NotBlank
+    @Size(max = 100)
+    @Column(nullable = false, length = 100)
     private String nombre;
 
-    @NotBlank(message = "{sucursal.direccion.requerida}")
-    @Column(nullable = false)
+    @NotBlank
+    @Size(max = 200)
+    @Column(nullable = false, length = 200)
     private String direccion;
 
-    @NotBlank(message = "{sucursal.telefono.requerido}")
-    @Column(nullable = false)
+    @NotBlank
+    @Size(max = 20)
+    @Column(nullable = false, length = 20)
     private String telefono;
 
-    @Column(nullable = true)
+    @Size(max = 255)
     private String fotografiaFachada;
-
-    public Sucursal() {
-    }
-
-    public Sucursal(Integer numero, String nombre, String direccion, String telefono, String fotografiaFachada) {
-        this.numero = numero;
-        this.nombre = nombre;
-        this.direccion = direccion;
-        this.telefono = telefono;
-        this.fotografiaFachada = fotografiaFachada;
-    }
 
     public Integer getNumero() {
         return numero;
@@ -81,8 +76,21 @@ public class Sucursal {
         this.fotografiaFachada = fotografiaFachada;
     }
 
+    public Sucursal() {
+        this(null, null, null, null, null);
+    }
+
+    public Sucursal(Integer numero, String nombre, String direccion, String telefono, String fotografiaFachada) {
+        this.numero = numero;
+        this.nombre = nombre;
+        this.direccion = direccion;
+        this.telefono = telefono;
+        this.fotografiaFachada = fotografiaFachada;
+    }
+
     @Override
     public String toString() {
         return numero + " - " + nombre;
     }
+
 }

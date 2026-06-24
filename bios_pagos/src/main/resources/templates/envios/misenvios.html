@@ -30,18 +30,26 @@
         <tbody>
             <tr th:each="envio : ${envios}">
                 <td th:text="${envio.id}"></td>
+
                 <td th:text="${envio.fechaHoraRegistro}"></td>
+
                 <td th:text="${envio.monto}"></td>
-                <td th:text="${envio.importeACobrar}"></td>
+
+                <td th:text="${envio.importeCobrar}"></td>
+
                 <td th:text="${envio.cedulaDestinatario}"></td>
-                <td th:text="${envio.sucursalPago.nombre}"></td>
+
+                <td th:text="${envio.sucursalCobro.nombre}"></td>
+
                 <td th:text="${envio.fechaHoraPago == null ? 'Por cobrar' : 'Cobrado'}"></td>
             </tr>
         </tbody>
     </table>
 
     <p>
-        <a th:href="@{/}">Volver</a>
+        <a th:href="@{/}">
+            Volver
+        </a>
     </p>
 
 </body>

@@ -6,15 +6,22 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import uy.edu.bios.ejemplos.biospagos.dominio.Cliente;
-import uy.edu.bios.ejemplos.biospagos.repositorios.RepositorioCliente;
+import uy.edu.bios.ejemplos.biospagos.excepciones.ExcepcionBiosPagos;
+import uy.edu.bios.ejemplos.biospagos.excepciones.ExcepcionNoExiste;
+import uy.edu.bios.ejemplos.biospagos.repositorios.IRepositorioClientes;
+import uy.edu.bios.ejemplos.biospagos.repositorios.IRepositorioEnviosDinero;
 
 @Service
 public class ServicioClientes implements IServicioClientes {
 
-    private final RepositorioCliente repositorioCliente;
+    private final IRepositorioClientes repositorioCliente;
+    private final IRepositorioEnviosDinero repositorioEnvioDinero;
 
-    public ServicioClientes(RepositorioCliente repositorioCliente) {
+    public ServicioClientes(IRepositorioClientes repositorioCliente,
+            IRepositorioEnviosDinero repositorioEnvioDinero) {
+
         this.repositorioCliente = repositorioCliente;
+        this.repositorioEnvioDinero = repositorioEnvioDinero;
     }
 
     @Override
@@ -28,12 +35,32 @@ public class ServicioClientes implements IServicioClientes {
     }
 
     @Override
-    public Cliente guardar(Cliente cliente) {
+    public Cliente guardar(Cliente cliente) throws ExcepcionBiosPagos {
+
+        Cliente clienteAnterior = repositorioCliente.findById(cliente.getCorreoElectronico()).orElse(null);
+
+        if (clienteAnterior != null) {
+            if (cliente.getClaveAcceso() == null || cliente.getClaveAcceso().isBlank()) {
+                cliente.setClaveAcceso(clienteAnterior.getClaveAcceso());
+            }
+        }
+
         return repositorioCliente.save(cliente);
     }
 
     @Override
-    public void eliminar(String correoElectronico) {
+    public void eliminar(String correoElectronico) throws ExcepcionBiosPagos {
+
+        Cliente cliente = repositorioCliente.findById(correoElectronico).orElse(null);
+
+        if (cliente == null) {
+            throw new ExcepcionNoExiste("No existe el cliente indicado.");
+        }
+
+        if (repositorioEnvioDinero.existsByCliente(cliente)) {
+            throw new ExcepcionBiosPagos("No es posible eliminar el cliente porque tiene envíos asociados.");
+        }
+
         repositorioCliente.deleteById(correoElectronico);
     }
 }

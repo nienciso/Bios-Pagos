@@ -35,39 +35,27 @@
         </div>
 
         <div>
-            <label>Empleado:</label>
-            <select th:field="*{empleado}">
-                <option value="">Seleccione un empleado</option>
-                <option th:each="empleado : ${empleados}"
-                        th:value="${empleado.correoElectronico}"
-                        th:text="${empleado.nombreCompleto}">
-                </option>
-            </select>
-            <span th:if="${#fields.hasErrors('empleado')}" th:errors="*{empleado}"></span>
-        </div>
-
-        <div>
-            <label>Sucursal de registro:</label>
-            <select th:field="*{sucursalRegistro}">
+            <label>Sucursal de origen:</label>
+            <select th:field="*{sucursalOrigen}">
                 <option value="">Seleccione una sucursal</option>
                 <option th:each="sucursal : ${sucursales}"
                         th:value="${sucursal.numero}"
                         th:text="${sucursal.nombre}">
                 </option>
             </select>
-            <span th:if="${#fields.hasErrors('sucursalRegistro')}" th:errors="*{sucursalRegistro}"></span>
+            <span th:if="${#fields.hasErrors('sucursalOrigen')}" th:errors="*{sucursalOrigen}"></span>
         </div>
 
         <div>
             <label>Sucursal de cobro:</label>
-            <select th:field="*{sucursalPago}">
+            <select th:field="*{sucursalCobro}">
                 <option value="">Seleccione una sucursal</option>
                 <option th:each="sucursal : ${sucursales}"
                         th:value="${sucursal.numero}"
                         th:text="${sucursal.nombre}">
                 </option>
             </select>
-            <span th:if="${#fields.hasErrors('sucursalPago')}" th:errors="*{sucursalPago}"></span>
+            <span th:if="${#fields.hasErrors('sucursalCobro')}" th:errors="*{sucursalCobro}"></span>
         </div>
 
         <br>

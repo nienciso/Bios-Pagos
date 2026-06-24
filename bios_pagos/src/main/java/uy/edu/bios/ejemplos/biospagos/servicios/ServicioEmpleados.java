@@ -6,17 +6,19 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import uy.edu.bios.ejemplos.biospagos.dominio.Empleado;
-import uy.edu.bios.ejemplos.biospagos.repositorios.RepositorioEmpleado;
-import uy.edu.bios.ejemplos.biospagos.repositorios.RepositorioEnvioDinero;
+import uy.edu.bios.ejemplos.biospagos.excepciones.ExcepcionBiosPagos;
+import uy.edu.bios.ejemplos.biospagos.excepciones.ExcepcionNoExiste;
+import uy.edu.bios.ejemplos.biospagos.repositorios.IRepositorioEmpleados;
+import uy.edu.bios.ejemplos.biospagos.repositorios.IRepositorioEnviosDinero;
 
 @Service
 public class ServicioEmpleados implements IServicioEmpleados {
 
-    private final RepositorioEmpleado repositorioEmpleado;
-    private final RepositorioEnvioDinero repositorioEnvioDinero;
+    private final IRepositorioEmpleados repositorioEmpleado;
+    private final IRepositorioEnviosDinero repositorioEnvioDinero;
 
-    public ServicioEmpleados(RepositorioEmpleado repositorioEmpleado,
-            RepositorioEnvioDinero repositorioEnvioDinero) {
+    public ServicioEmpleados(IRepositorioEmpleados repositorioEmpleado,
+            IRepositorioEnviosDinero repositorioEnvioDinero) {
 
         this.repositorioEmpleado = repositorioEmpleado;
         this.repositorioEnvioDinero = repositorioEnvioDinero;
@@ -32,18 +34,31 @@ public class ServicioEmpleados implements IServicioEmpleados {
         return repositorioEmpleado.findById(correoElectronico);
     }
 
-    @Override
-    public Empleado guardar(Empleado empleado) {
-        return repositorioEmpleado.save(empleado);
+@Override
+public Empleado guardar(Empleado empleado) throws ExcepcionBiosPagos {
+
+    Empleado empleadoAnterior = repositorioEmpleado.findById(empleado.getCorreoElectronico()).orElse(null);
+
+    if (empleadoAnterior != null) {
+
+        if (empleado.getClaveAcceso() == null || empleado.getClaveAcceso().isBlank()) {
+            empleado.setClaveAcceso(empleadoAnterior.getClaveAcceso());
+        }
+
+    } else {
+        empleado.setActivo(true);
     }
 
+    return repositorioEmpleado.save(empleado);
+}
+
     @Override
-    public void eliminar(String correoElectronico) {
+    public void eliminar(String correoElectronico) throws ExcepcionBiosPagos {
 
         Empleado empleado = repositorioEmpleado.findById(correoElectronico).orElse(null);
 
         if (empleado == null) {
-            return;
+            throw new ExcepcionNoExiste("No existe el empleado indicado.");
         }
 
         if (repositorioEnvioDinero.existsByEmpleado(empleado)) {
@@ -55,12 +70,12 @@ public class ServicioEmpleados implements IServicioEmpleados {
     }
 
     @Override
-    public List<Empleado> buscarPorNombre(String nombre) {
-        return repositorioEmpleado.findByNombreCompletoContainingIgnoreCase(nombre);
+    public List<Empleado> buscarPorNombre(String nombreCompleto) {
+        return repositorioEmpleado.findByNombreCompletoContainingIgnoreCase(nombreCompleto);
     }
 
     @Override
-    public List<Empleado> buscarPorCorreo(String correo) {
-        return repositorioEmpleado.findByCorreoElectronicoContainingIgnoreCase(correo);
+    public List<Empleado> buscarPorCorreo(String correoElectronico) {
+        return repositorioEmpleado.findByCorreoElectronicoContainingIgnoreCase(correoElectronico);
     }
 }

@@ -3,80 +3,58 @@ package uy.edu.bios.ejemplos.biospagos.dominio;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
+@Table(name = "envios_dinero")
 public class EnvioDinero {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "{envio.fechaRegistro.requerida}")
-    @Column(nullable = false)
+    @NotNull
     private LocalDateTime fechaHoraRegistro;
 
-    @NotNull(message = "{envio.monto.requerido}")
-    @DecimalMin(value = "0.01", message = "{envio.monto.minimo}")
-    @Column(nullable = false)
+    @NotNull
+    @DecimalMin("0.01")
     private BigDecimal monto;
 
-    @NotBlank(message = "{envio.cedulaDestinatario.requerida}")
-    @Column(nullable = false)
+    @NotBlank
     private String cedulaDestinatario;
 
-    @Column(nullable = true)
     private LocalDateTime fechaHoraPago;
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "correo_cliente", nullable = false)
-    @NotNull(message = "{envio.cliente.requerido}")
     private Cliente cliente;
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "correo_empleado", nullable = false)
-    @NotNull(message = "{envio.empleado.requerido}")
     private Empleado empleado;
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "numero_sucursal_registro", nullable = false)
-    @NotNull(message = "{envio.sucursalRegistro.requerida}")
-    private Sucursal sucursalRegistro;
+    private Sucursal sucursalOrigen;
 
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "numero_sucursal_pago", nullable = false)
-    @NotNull(message = "{envio.sucursalPago.requerida}")
-    private Sucursal sucursalPago;
-
-    public EnvioDinero() {
-    }
-
-    public EnvioDinero(Long id, LocalDateTime fechaHoraRegistro, BigDecimal monto,
-            String cedulaDestinatario, LocalDateTime fechaHoraPago,
-            Cliente cliente, Empleado empleado, Sucursal sucursalRegistro, Sucursal sucursalPago) {
-
-        this.id = id;
-        this.fechaHoraRegistro = fechaHoraRegistro;
-        this.monto = monto;
-        this.cedulaDestinatario = cedulaDestinatario;
-        this.fechaHoraPago = fechaHoraPago;
-        this.cliente = cliente;
-        this.empleado = empleado;
-        this.sucursalRegistro = sucursalRegistro;
-        this.sucursalPago = sucursalPago;
-    }
+    private Sucursal sucursalCobro;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDateTime getFechaHoraRegistro() {
@@ -89,6 +67,14 @@ public class EnvioDinero {
 
     public BigDecimal getMonto() {
         return monto;
+    }
+
+    public BigDecimal getImporteCobrar() {
+        if (monto == null) {
+            return BigDecimal.ZERO;
+        }
+
+        return monto.multiply(new BigDecimal("1.10"));
     }
 
     public void setMonto(BigDecimal monto) {
@@ -127,36 +113,48 @@ public class EnvioDinero {
         this.empleado = empleado;
     }
 
-    public Sucursal getSucursalRegistro() {
-        return sucursalRegistro;
+    public Sucursal getSucursalOrigen() {
+        return sucursalOrigen;
     }
 
-    public void setSucursalRegistro(Sucursal sucursalRegistro) {
-        this.sucursalRegistro = sucursalRegistro;
+    public void setSucursalOrigen(Sucursal sucursalOrigen) {
+        this.sucursalOrigen = sucursalOrigen;
     }
 
-    public Sucursal getSucursalPago() {
-        return sucursalPago;
+    public Sucursal getSucursalCobro() {
+        return sucursalCobro;
     }
 
-    public void setSucursalPago(Sucursal sucursalPago) {
-        this.sucursalPago = sucursalPago;
+    public void setSucursalCobro(Sucursal sucursalCobro) {
+        this.sucursalCobro = sucursalCobro;
     }
 
-    public BigDecimal getImporteACobrar() {
-        if (monto == null) {
-            return BigDecimal.ZERO;
-        }
+    public EnvioDinero() {
+        this(null, null, null, null, null, null, null, null, null);
+    }
 
-        return monto.multiply(new BigDecimal("1.10"));
+    public EnvioDinero(Long id, LocalDateTime fechaHoraRegistro, BigDecimal monto,
+            String cedulaDestinatario, LocalDateTime fechaHoraPago,
+            Cliente cliente, Empleado empleado,
+            Sucursal sucursalOrigen, Sucursal sucursalCobro) {
+
+        this.id = id;
+        this.fechaHoraRegistro = fechaHoraRegistro;
+        this.monto = monto;
+        this.cedulaDestinatario = cedulaDestinatario;
+        this.fechaHoraPago = fechaHoraPago;
+        this.cliente = cliente;
+        this.empleado = empleado;
+        this.sucursalOrigen = sucursalOrigen;
+        this.sucursalCobro = sucursalCobro;
     }
 
     @Override
     public String toString() {
-        return "EnvioDinero [id=" + id
-                + ", fechaHoraRegistro=" + fechaHoraRegistro
-                + ", monto=" + monto
-                + ", cedulaDestinatario=" + cedulaDestinatario
-                + ", fechaHoraPago=" + fechaHoraPago + "]";
+        return "EnvioDinero [id=" + id +
+                ", fechaHoraRegistro=" + fechaHoraRegistro +
+                ", monto=" + monto +
+                ", cedulaDestinatario=" + cedulaDestinatario +
+                ", fechaHoraPago=" + fechaHoraPago + "]";
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import uy.edu.bios.ejemplos.biospagos.dominio.Empleado;
+import uy.edu.bios.ejemplos.biospagos.excepciones.ExcepcionBiosPagos;
 
 public interface IServicioEmpleados {
 
@@ -11,13 +12,11 @@ public interface IServicioEmpleados {
 
     Optional<Empleado> buscar(String correoElectronico);
 
-    Empleado guardar(Empleado empleado);
+    Empleado guardar(Empleado empleado) throws ExcepcionBiosPagos;
 
-    void eliminar(String correoElectronico);
+    void eliminar(String correoElectronico) throws ExcepcionBiosPagos;
 
     List<Empleado> buscarPorNombre(String nombre);
 
     List<Empleado> buscarPorCorreo(String correo);
-
-    
 }

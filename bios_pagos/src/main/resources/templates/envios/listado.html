@@ -9,7 +9,7 @@
     <h1>Listado de Envíos de Dinero</h1>
 
     <p>
-        <a href="/envios/nuevo">Nuevo envío</a>
+        <a th:href="@{/envios/nuevo}">Nuevo envío</a>
     </p>
 
     <table border="1">
@@ -20,9 +20,9 @@
                 <th>Monto</th>
                 <th>Cliente</th>
                 <th>Destinatario</th>
-                <th>Sucursal registro</th>
+                <th>Sucursal origen</th>
                 <th>Fecha pago</th>
-                <th>Sucursal pago</th>
+                <th>Sucursal cobro</th>
                 <th>Importe a cobrar</th>
                 <th>Acciones</th>
             </tr>
@@ -30,6 +30,7 @@
 
         <tbody>
             <tr th:each="envio : ${envios}">
+
                 <td th:text="${envio.id}"></td>
 
                 <td th:text="${envio.fechaHoraRegistro}"></td>
@@ -40,13 +41,13 @@
 
                 <td th:text="${envio.cedulaDestinatario}"></td>
 
-                <td th:text="${envio.sucursalRegistro.nombre}"></td>
+                <td th:text="${envio.sucursalOrigen.nombre}"></td>
 
                 <td th:text="${envio.fechaHoraPago != null ? envio.fechaHoraPago : 'Por cobrar'}"></td>
 
-                <td th:text="${envio.sucursalPago != null ? envio.sucursalPago.nombre : 'Pendiente'}"></td>
+                <td th:text="${envio.sucursalCobro.nombre}"></td>
 
-                <td th:text="${envio.importeACobrar}"></td>
+                <td th:text="${envio.importeCobrar}"></td>
 
                 <td>
 
@@ -68,6 +69,7 @@
                     </a>
 
                 </td>
+
             </tr>
         </tbody>
     </table>

@@ -1,10 +1,10 @@
 package uy.edu.bios.ejemplos.biospagos.dominio;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -14,28 +14,20 @@ import jakarta.validation.constraints.Size;
 public abstract class Usuario {
 
     @Id
-    @Email(message = "{usuario.correo.formato}")
-    @NotBlank(message = "{usuario.correo.requerido}")
-    @Column(nullable = false, unique = true)
+    @Email
+    @NotBlank
+    @Size(max = 100)
     private String correoElectronico;
 
-    @NotBlank(message = "{usuario.clave.requerida}")
-    @Size(min = 6, max = 20, message = "{usuario.clave.longitud}")
+    @NotBlank
+    @Size(max = 100)
     @Column(nullable = false)
     private String claveAcceso;
 
-    @NotBlank(message = "{usuario.nombre.requerido}")
+    @NotBlank
+    @Size(max = 100)
     @Column(nullable = false)
     private String nombreCompleto;
-
-    public Usuario() {
-    }
-
-    public Usuario(String correoElectronico, String claveAcceso, String nombreCompleto) {
-        this.correoElectronico = correoElectronico;
-        this.claveAcceso = claveAcceso;
-        this.nombreCompleto = nombreCompleto;
-    }
 
     public String getCorreoElectronico() {
         return correoElectronico;
@@ -61,9 +53,20 @@ public abstract class Usuario {
         this.nombreCompleto = nombreCompleto;
     }
 
+    public Usuario() {
+        this(null, null, null);
+    }
+
+    public Usuario(String correoElectronico, String claveAcceso, String nombreCompleto) {
+        this.correoElectronico = correoElectronico;
+        this.claveAcceso = claveAcceso;
+        this.nombreCompleto = nombreCompleto;
+    }
+
     @Override
     public String toString() {
         return "Usuario [correoElectronico=" + correoElectronico
                 + ", nombreCompleto=" + nombreCompleto + "]";
     }
+
 }

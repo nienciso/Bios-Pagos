@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import uy.edu.bios.ejemplos.biospagos.dominio.Sucursal;
+import uy.edu.bios.ejemplos.biospagos.excepciones.ExcepcionBiosPagos;
 
 public interface IServicioSucursales {
 
@@ -11,7 +12,7 @@ public interface IServicioSucursales {
 
     Optional<Sucursal> buscar(Integer numero);
 
-    Sucursal guardar(Sucursal sucursal);
+    Sucursal guardar(Sucursal sucursal) throws ExcepcionBiosPagos;
 
-    void eliminar(Integer numero);
+    void eliminar(Integer numero) throws ExcepcionBiosPagos;
 }

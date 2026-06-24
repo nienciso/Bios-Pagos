@@ -2,18 +2,20 @@ package uy.edu.bios.ejemplos.biospagos.controladores;
 
 import java.time.LocalDateTime;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import uy.edu.bios.ejemplos.biospagos.dominio.Cliente;
+import uy.edu.bios.ejemplos.biospagos.dominio.Empleado;
 import uy.edu.bios.ejemplos.biospagos.dominio.EnvioDinero;
+import uy.edu.bios.ejemplos.biospagos.excepciones.ExcepcionBiosPagos;
 import uy.edu.bios.ejemplos.biospagos.servicios.IServicioClientes;
 import uy.edu.bios.ejemplos.biospagos.servicios.IServicioEmpleados;
 import uy.edu.bios.ejemplos.biospagos.servicios.IServicioEnviosDinero;
@@ -52,22 +54,31 @@ public class ControladorEnviosDinero {
         return "envios/formulario";
     }
 
-    @PostMapping("/envios/guardar")
-    public String guardar(@Valid EnvioDinero envio, BindingResult result, Model model) {
+@PostMapping("/envios/guardar")
+public String guardar(EnvioDinero envio, BindingResult result, Model model, Authentication authentication) {
 
-        if (envio.getFechaHoraRegistro() == null) {
-            envio.setFechaHoraRegistro(LocalDateTime.now());
-        }
+    Empleado empleado = servicioEmpleados.buscar(authentication.getName()).orElse(null);
 
-        if (result.hasErrors()) {
-            cargarDatosFormulario(model);
-            return "envios/formulario";
-        }
-
-        servicioEnviosDinero.guardar(envio);
-        return "redirect:/envios";
+    if (empleado == null) {
+        model.addAttribute("error", "No se encontró el empleado logueado.");
+        model.addAttribute("envio", envio);
+        cargarDatosFormulario(model);
+        return "envios/formulario";
     }
 
+    envio.setEmpleado(empleado);
+
+    try {
+        servicioEnviosDinero.guardar(envio);
+        return "redirect:/envios";
+
+    } catch (ExcepcionBiosPagos ex) {
+        model.addAttribute("error", ex.getMessage());
+        model.addAttribute("envio", envio);
+        cargarDatosFormulario(model);
+        return "envios/formulario";
+    }
+}
     @GetMapping("/envios/ver/{id}")
     public String ver(@PathVariable Long id, Model model) {
 
@@ -83,8 +94,51 @@ public class ControladorEnviosDinero {
 
     @GetMapping("/envios/eliminar/{id}")
     public String eliminar(@PathVariable Long id) {
-        servicioEnviosDinero.eliminar(id);
+
+        try {
+            servicioEnviosDinero.eliminar(id);
+        } catch (ExcepcionBiosPagos ex) {
+        }
+
         return "redirect:/envios";
+    }
+
+    @GetMapping("/envios/pagar/{id}")
+    public String pagar(@PathVariable Long id) {
+
+        EnvioDinero envio = servicioEnviosDinero.buscar(id).orElse(null);
+
+        if (envio != null && envio.getFechaHoraPago() == null) {
+            envio.setFechaHoraPago(LocalDateTime.now());
+
+            try {
+                servicioEnviosDinero.guardar(envio);
+            } catch (ExcepcionBiosPagos ex) {
+            }
+        }
+
+        return "redirect:/envios";
+    }
+
+    @GetMapping("/mis-envios")
+    public String misEnvios(String estado, Model model, Authentication authentication) {
+
+        Cliente cliente = servicioClientes.buscar(authentication.getName()).orElse(null);
+
+        if (cliente == null) {
+            return "redirect:/";
+        }
+
+        if ("cobrados".equals(estado)) {
+            model.addAttribute("envios", servicioEnviosDinero.listarPorClienteCobrados(cliente));
+        } else if ("pendientes".equals(estado)) {
+            model.addAttribute("envios", servicioEnviosDinero.listarPorClientePendientes(cliente));
+        } else {
+            model.addAttribute("envios", servicioEnviosDinero.listarPorCliente(cliente));
+        }
+
+        model.addAttribute("estado", estado);
+        return "envios/misenvios";
     }
 
     private void cargarDatosFormulario(Model model) {
@@ -92,41 +146,4 @@ public class ControladorEnviosDinero {
         model.addAttribute("empleados", servicioEmpleados.listar());
         model.addAttribute("sucursales", servicioSucursales.listar());
     }
-
-    @GetMapping("/envios/pagar/{id}")
-public String pagar(@PathVariable Long id) {
-
-    EnvioDinero envio = servicioEnviosDinero.buscar(id).orElse(null);
-
-    if (envio != null && envio.getFechaHoraPago() == null) {
-        envio.setFechaHoraPago(LocalDateTime.now());
-        servicioEnviosDinero.guardar(envio);
-    }
-
-    return "redirect:/envios";
-}
-
-@GetMapping("/mis-envios")
-public String misEnvios(String estado, Model model, org.springframework.security.core.Authentication authentication) {
-
-    String correoElectronico = authentication.getName();
-
-    Cliente cliente = servicioClientes.buscar(correoElectronico).orElse(null);
-
-    if (cliente == null) {
-        return "redirect:/";
-    }
-
-    if ("cobrados".equals(estado)) {
-        model.addAttribute("envios", servicioEnviosDinero.listarPorClienteCobrados(cliente));
-    } else if ("pendientes".equals(estado)) {
-        model.addAttribute("envios", servicioEnviosDinero.listarPorClientePendientes(cliente));
-    } else {
-        model.addAttribute("envios", servicioEnviosDinero.listarPorCliente(cliente));
-    }
-
-    model.addAttribute("estado", estado);
-
-    return "envios/misenvios";
-}
 }

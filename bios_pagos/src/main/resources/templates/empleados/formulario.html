@@ -33,13 +33,10 @@
             <input type="date" name="fechaIngreso" th:value="${empleado.fechaIngreso}">
             <span th:if="${#fields.hasErrors('fechaIngreso')}" th:errors="*{fechaIngreso}"></span>
         </div>
-
-        <div>
-            <label>Activo:</label>
-
-            <input type="checkbox"
-                th:field="*{activo}">
-        </div>
+<div>
+    <label>Activo:</label>
+    <input type="checkbox" name="activo" value="true" th:checked="${empleado.activo}">
+</div>
         <br>
 
         <button type="submit">Guardar</button>

@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.Valid;
 
 import uy.edu.bios.ejemplos.biospagos.dominio.Sucursal;
+import uy.edu.bios.ejemplos.biospagos.excepciones.ExcepcionBiosPagos;
 import uy.edu.bios.ejemplos.biospagos.servicios.IServicioSucursales;
 
 @Controller
@@ -78,8 +79,14 @@ public class ControladorSucursales {
             }
         }
 
-        servicioSucursales.guardar(sucursal);
-        return "redirect:/sucursales";
+        try {
+            servicioSucursales.guardar(sucursal);
+            return "redirect:/sucursales";
+
+        } catch (ExcepcionBiosPagos ex) {
+            model.addAttribute("error", ex.getMessage());
+            return "sucursales/formulario";
+        }
     }
 
     @GetMapping("/sucursales/editar/{numero}")
@@ -95,17 +102,17 @@ public class ControladorSucursales {
         return "sucursales/formulario";
     }
 
-    @GetMapping("/sucursales/eliminar/{numero}")
-    public String eliminar(@PathVariable Integer numero, Model model) {
+@GetMapping("/sucursales/eliminar/{numero}")
+public String eliminar(@PathVariable Integer numero, Model model) {
 
-        try {
-            servicioSucursales.eliminar(numero);
-            return "redirect:/sucursales";
+    try {
+        servicioSucursales.eliminar(numero);
+        return "redirect:/sucursales";
 
-        } catch (Exception e) {
-            model.addAttribute("sucursales", servicioSucursales.listar());
-            model.addAttribute("error", "No es posible eliminar sucursales con envíos asociados.");
-            return "sucursales/listado";
-        }
+    } catch (Exception e) {
+        model.addAttribute("sucursales", servicioSucursales.listar());
+        model.addAttribute("error", "No es posible eliminar sucursales con envíos asociados.");
+        return "sucursales/listado";
     }
+}
 }
